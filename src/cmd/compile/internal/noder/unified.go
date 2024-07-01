@@ -69,6 +69,14 @@ func LookupFunc(fullName string) (*ir.Func, error) {
 	return nil, fmt.Errorf("%s is not a function (%v) or method (%v)", fullName, err, mErr)
 }
 
+// PostLookupCleanup performs cleanup operations needed
+// after a series of calls to LookupFunc, specifically invoking
+// readBodies to post-process any funcs on the "todoBodies" list
+// that were added as a result of the lookup operations.
+func PostLookupCleanup() {
+	readBodies(typecheck.Target, false)
+}
+
 func lookupFunction(pkg *types.Pkg, symName string) (*ir.Func, error) {
 	sym := pkg.Lookup(symName)
 
@@ -179,6 +187,7 @@ func unified(m posMap, noders []*noder) {
 	inline.InlineCall = unifiedInlineCall
 	typecheck.HaveInlineBody = unifiedHaveInlineBody
 	pgoir.LookupFunc = LookupFunc
+	pgoir.PostLookupCleanup = PostLookupCleanup
 
 	data := writePkgStub(m, noders)
 
@@ -304,9 +313,9 @@ func readBodies(target *ir.Package, duringInlining bool) {
 // writes an export data package stub representing them,
 // and returns the result.
 func writePkgStub(m posMap, noders []*noder) string {
-	pkg, info := checkFiles(m, noders)
+	pkg, info, otherInfo := checkFiles(m, noders)
 
-	pw := newPkgWriter(m, pkg, info)
+	pw := newPkgWriter(m, pkg, info, otherInfo)
 
 	pw.collectDecls(noders)
 
