@@ -16,7 +16,6 @@ import (
 	. "os"
 	"os/exec"
 	"path/filepath"
-	"reflect"
 	"runtime"
 	"runtime/debug"
 	"slices"
@@ -805,13 +804,13 @@ func TestReaddirStatFailures(t *testing.T) {
 	}
 
 	if got, want := names(mustReadDir("initial readdir")),
-		[]string{"good1", "good2", "x"}; !reflect.DeepEqual(got, want) {
+		[]string{"good1", "good2", "x"}; !slices.Equal(got, want) {
 		t.Errorf("initial readdir got %q; want %q", got, want)
 	}
 
 	xerr = ErrNotExist
 	if got, want := names(mustReadDir("with x disappearing")),
-		[]string{"good1", "good2"}; !reflect.DeepEqual(got, want) {
+		[]string{"good1", "good2"}; !slices.Equal(got, want) {
 		t.Errorf("with x disappearing, got %q; want %q", got, want)
 	}
 
@@ -1376,8 +1375,7 @@ func TestChtimes(t *testing.T) {
 	t.Parallel()
 
 	f := newFile(t)
-
-	f.Write([]byte("hello, world\n"))
+	// This should be an empty file (see #68687, #68663).
 	f.Close()
 
 	testChtimes(t, f.Name())
@@ -1395,12 +1393,9 @@ func TestChtimesOmit(t *testing.T) {
 func testChtimesOmit(t *testing.T, omitAt, omitMt bool) {
 	t.Logf("omit atime: %v, mtime: %v", omitAt, omitMt)
 	file := newFile(t)
-	_, err := file.Write([]byte("hello, world\n"))
-	if err != nil {
-		t.Fatal(err)
-	}
+	// This should be an empty file (see #68687, #68663).
 	name := file.Name()
-	err = file.Close()
+	err := file.Close()
 	if err != nil {
 		t.Error(err)
 	}
@@ -1534,10 +1529,10 @@ func testChtimes(t *testing.T, name string) {
 				t.Log(errormsg)
 				t.Log("Known NetBSD issue (atime not changed on fs mounted with noatime); ignoring.")
 			} else {
-				t.Errorf(errormsg)
+				t.Error(errormsg)
 			}
 		default:
-			t.Errorf(errormsg)
+			t.Error(errormsg)
 		}
 	}
 
@@ -2817,6 +2812,33 @@ func TestUserCacheDir(t *testing.T) {
 	}
 }
 
+func TestUserCacheDirXDGConfigDirEnvVar(t *testing.T) {
+	switch runtime.GOOS {
+	case "windows", "darwin", "plan9":
+		t.Skip("$XDG_CACHE_HOME is effective only on Unix systems")
+	}
+
+	wd, err := Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("XDG_CACHE_HOME", wd)
+
+	dir, err := UserCacheDir()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if dir != wd {
+		t.Fatalf("UserCacheDir returned %q; want the value of $XDG_CACHE_HOME %q", dir, wd)
+	}
+
+	t.Setenv("XDG_CACHE_HOME", "some-dir")
+	_, err = UserCacheDir()
+	if err == nil {
+		t.Fatal("UserCacheDir succeeded though $XDG_CACHE_HOME contains a relative path")
+	}
+}
+
 func TestUserConfigDir(t *testing.T) {
 	t.Parallel()
 
@@ -2838,6 +2860,33 @@ func TestUserConfigDir(t *testing.T) {
 	}
 	if !fi.IsDir() {
 		t.Fatalf("dir %s is not directory; type = %v", dir, fi.Mode())
+	}
+}
+
+func TestUserConfigDirXDGConfigDirEnvVar(t *testing.T) {
+	switch runtime.GOOS {
+	case "windows", "darwin", "plan9":
+		t.Skip("$XDG_CONFIG_HOME is effective only on Unix systems")
+	}
+
+	wd, err := Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("XDG_CONFIG_HOME", wd)
+
+	dir, err := UserConfigDir()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if dir != wd {
+		t.Fatalf("UserConfigDir returned %q; want the value of $XDG_CONFIG_HOME %q", dir, wd)
+	}
+
+	t.Setenv("XDG_CONFIG_HOME", "some-dir")
+	_, err = UserConfigDir()
+	if err == nil {
+		t.Fatal("UserConfigDir succeeded though $XDG_CONFIG_HOME contains a relative path")
 	}
 }
 

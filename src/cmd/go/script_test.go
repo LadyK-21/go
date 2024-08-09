@@ -27,9 +27,9 @@ import (
 
 	"cmd/go/internal/cfg"
 	"cmd/go/internal/gover"
-	"cmd/go/internal/script"
-	"cmd/go/internal/script/scripttest"
 	"cmd/go/internal/vcweb/vcstest"
+	"cmd/internal/script"
+	"cmd/internal/script/scripttest"
 
 	"golang.org/x/telemetry/counter/countertest"
 )
@@ -89,7 +89,7 @@ func TestScript(t *testing.T) {
 		t.Fatal(err)
 	}
 	engine := &script.Engine{
-		Conds: scriptConditions(),
+		Conds: scriptConditions(t),
 		Cmds:  scriptCommands(quitSignal(), gracePeriod),
 		Quiet: !testing.Verbose(),
 	}

@@ -219,7 +219,9 @@ var stdlibImportcfgString string
 
 func stdlibImportcfg() string {
 	stdlibImportcfgStringOnce.Do(func() {
-		output, err := exec.Command(goTool, "list", "-export", "-f", "{{if .Export}}packagefile {{.ImportPath}}={{.Export}}{{end}}", "std").Output()
+		cmd := exec.Command(goTool, "list", "-export", "-f", "{{if .Export}}packagefile {{.ImportPath}}={{.Export}}{{end}}", "std")
+		cmd.Env = append(os.Environ(), "GOENV=off", "GOFLAGS=")
+		output, err := cmd.Output()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -1859,7 +1861,6 @@ var types2Failures = setOf(
 	"fixedbugs/issue20233.go", // types2 reports two instead of one error (preference: 1.17 compiler)
 	"fixedbugs/issue20245.go", // types2 reports two instead of one error (preference: 1.17 compiler)
 	"fixedbugs/issue31053.go", // types2 reports "unknown field" instead of "cannot refer to unexported field"
-	"fixedbugs/notinheap.go",  // types2 doesn't report errors about conversions that are invalid due to //go:notinheap
 )
 
 var types2Failures32Bit = setOf(

@@ -159,10 +159,16 @@ var filemap = map[string]action{
 			"syntax.StringLit->token.STRING") // must happen before renaming identifiers
 		renameIdents(f, "syntax->ast")
 	},
-	"package.go":       nil,
-	"pointer.go":       nil,
-	"predicates.go":    nil,
-	"scope.go":         func(f *ast.File) { fixTokenPos(f); renameIdents(f, "Squash->squash", "InsertLazy->_InsertLazy") },
+	"package.go":    nil,
+	"pointer.go":    nil,
+	"predicates.go": nil,
+	"recording.go": func(f *ast.File) {
+		renameImportPath(f, `"cmd/compile/internal/syntax"->"go/ast"`)
+		renameSelectorExprs(f, "syntax.Name->ast.Ident") // must happen before renaming identifiers
+		renameIdents(f, "syntax->ast")
+		fixAtPosCall(f)
+	},
+	"scope.go":         func(f *ast.File) { fixTokenPos(f); renameIdents(f, "InsertLazy->_InsertLazy") },
 	"selection.go":     nil,
 	"sizes.go":         func(f *ast.File) { renameIdents(f, "IsSyncAtomicAlign64->_IsSyncAtomicAlign64") },
 	"slice.go":         nil,

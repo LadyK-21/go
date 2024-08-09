@@ -18,6 +18,8 @@ type PkgSpecial struct {
 	//
 	// - Optimizations are always enabled.
 	//
+	// - Checkptr is always disabled.
+	//
 	// This should be set for runtime and all packages it imports, and may be
 	// set for additional packages.
 	Runtime bool
@@ -45,8 +47,8 @@ var runtimePkgs = []string{
 
 	"internal/runtime/atomic",
 	"internal/runtime/exithook",
-	"runtime/internal/math",
-	"runtime/internal/sys",
+	"internal/runtime/math",
+	"internal/runtime/sys",
 	"internal/runtime/syscall",
 
 	"internal/abi",

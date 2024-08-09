@@ -10,7 +10,7 @@ import (
 	"io"
 	"math"
 	"math/rand"
-	"reflect"
+	"slices"
 	"strconv"
 	. "strings"
 	"testing"
@@ -18,18 +18,6 @@ import (
 	"unicode/utf8"
 	"unsafe"
 )
-
-func eq(a, b []string) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-	return true
-}
 
 var abcd = "abcd"
 var faces = "☺☻☹"
@@ -418,7 +406,7 @@ var splittests = []SplitTest{
 func TestSplit(t *testing.T) {
 	for _, tt := range splittests {
 		a := SplitN(tt.s, tt.sep, tt.n)
-		if !eq(a, tt.a) {
+		if !slices.Equal(a, tt.a) {
 			t.Errorf("Split(%q, %q, %d) = %v; want %v", tt.s, tt.sep, tt.n, a, tt.a)
 			continue
 		}
@@ -431,7 +419,7 @@ func TestSplit(t *testing.T) {
 		}
 		if tt.n < 0 {
 			b := Split(tt.s, tt.sep)
-			if !reflect.DeepEqual(a, b) {
+			if !slices.Equal(a, b) {
 				t.Errorf("Split disagrees with SplitN(%q, %q, %d) = %v; want %v", tt.s, tt.sep, tt.n, b, a)
 			}
 		}
@@ -457,7 +445,7 @@ var splitaftertests = []SplitTest{
 func TestSplitAfter(t *testing.T) {
 	for _, tt := range splitaftertests {
 		a := SplitAfterN(tt.s, tt.sep, tt.n)
-		if !eq(a, tt.a) {
+		if !slices.Equal(a, tt.a) {
 			t.Errorf(`Split(%q, %q, %d) = %v; want %v`, tt.s, tt.sep, tt.n, a, tt.a)
 			continue
 		}
@@ -467,7 +455,7 @@ func TestSplitAfter(t *testing.T) {
 		}
 		if tt.n < 0 {
 			b := SplitAfter(tt.s, tt.sep)
-			if !reflect.DeepEqual(a, b) {
+			if !slices.Equal(a, b) {
 				t.Errorf("SplitAfter disagrees with SplitAfterN(%q, %q, %d) = %v; want %v", tt.s, tt.sep, tt.n, b, a)
 			}
 		}
@@ -500,7 +488,7 @@ var fieldstests = []FieldsTest{
 func TestFields(t *testing.T) {
 	for _, tt := range fieldstests {
 		a := Fields(tt.s)
-		if !eq(a, tt.a) {
+		if !slices.Equal(a, tt.a) {
 			t.Errorf("Fields(%q) = %v; want %v", tt.s, a, tt.a)
 			continue
 		}
@@ -517,7 +505,7 @@ var FieldsFuncTests = []FieldsTest{
 func TestFieldsFunc(t *testing.T) {
 	for _, tt := range fieldstests {
 		a := FieldsFunc(tt.s, unicode.IsSpace)
-		if !eq(a, tt.a) {
+		if !slices.Equal(a, tt.a) {
 			t.Errorf("FieldsFunc(%q, unicode.IsSpace) = %v; want %v", tt.s, a, tt.a)
 			continue
 		}
@@ -525,7 +513,7 @@ func TestFieldsFunc(t *testing.T) {
 	pred := func(c rune) bool { return c == 'X' }
 	for _, tt := range FieldsFuncTests {
 		a := FieldsFunc(tt.s, pred)
-		if !eq(a, tt.a) {
+		if !slices.Equal(a, tt.a) {
 			t.Errorf("FieldsFunc(%q) = %v, want %v", tt.s, a, tt.a)
 		}
 	}
