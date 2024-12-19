@@ -1,6 +1,6 @@
 <!--{
 	"Title": "The Go Programming Language Specification",
-	"Subtitle": "Language version go1.24 (Nov 20, 2024)",
+	"Subtitle": "Language version go1.24 (Dec 16, 2024)",
 	"Path": "/ref/spec"
 }-->
 
@@ -810,12 +810,12 @@ from existing types.
 </p>
 
 <pre class="ebnf">
-Type      = TypeName [ TypeArgs ] | TypeLit | "(" Type ")" .
-TypeName  = identifier | QualifiedIdent .
-TypeArgs  = "[" TypeList [ "," ] "]" .
-TypeList  = Type { "," Type } .
-TypeLit   = ArrayType | StructType | PointerType | FunctionType | InterfaceType |
-            SliceType | MapType | ChannelType .
+Type     = TypeName [ TypeArgs ] | TypeLit | "(" Type ")" .
+TypeName = identifier | QualifiedIdent .
+TypeArgs = "[" TypeList [ "," ] "]" .
+TypeList = Type { "," Type } .
+TypeLit  = ArrayType | StructType | PointerType | FunctionType | InterfaceType |
+           SliceType | MapType | ChannelType .
 </pre>
 
 <p>
@@ -1222,12 +1222,12 @@ is <code>nil</code>.
 </p>
 
 <pre class="ebnf">
-FunctionType   = "func" Signature .
-Signature      = Parameters [ Result ] .
-Result         = Parameters | Type .
-Parameters     = "(" [ ParameterList [ "," ] ] ")" .
-ParameterList  = ParameterDecl { "," ParameterDecl } .
-ParameterDecl  = [ IdentifierList ] [ "..." ] Type .
+FunctionType  = "func" Signature .
+Signature     = Parameters [ Result ] .
+Result        = Parameters | Type .
+Parameters    = "(" [ ParameterList [ "," ] ] ")" .
+ParameterList = ParameterDecl { "," ParameterDecl } .
+ParameterDecl = [ IdentifierList ] [ "..." ] Type .
 </pre>
 
 <p>
@@ -1634,8 +1634,8 @@ The value of an uninitialized map is <code>nil</code>.
 </p>
 
 <pre class="ebnf">
-MapType     = "map" "[" KeyType "]" ElementType .
-KeyType     = Type .
+MapType = "map" "[" KeyType "]" ElementType .
+KeyType = Type .
 </pre>
 
 <p>
@@ -2176,7 +2176,7 @@ within matching brace brackets.
 </p>
 
 <pre class="ebnf">
-Block = "{" StatementList "}" .
+Block         = "{" StatementList "}" .
 StatementList = { Statement ";" } .
 </pre>
 
@@ -2233,8 +2233,8 @@ and like the blank identifier it does not introduce a new binding.
 </p>
 
 <pre class="ebnf">
-Declaration   = ConstDecl | TypeDecl | VarDecl .
-TopLevelDecl  = Declaration | FunctionDecl | MethodDecl .
+Declaration  = ConstDecl | TypeDecl | VarDecl .
+TopLevelDecl = Declaration | FunctionDecl | MethodDecl .
 </pre>
 
 <p>
@@ -2679,9 +2679,9 @@ in square brackets rather than parentheses
 </p>
 
 <pre class="ebnf">
-TypeParameters  = "[" TypeParamList [ "," ] "]" .
-TypeParamList   = TypeParamDecl { "," TypeParamDecl } .
-TypeParamDecl   = IdentifierList TypeConstraint .
+TypeParameters = "[" TypeParamList [ "," ] "]" .
+TypeParamList  = TypeParamDecl { "," TypeParamDecl } .
+TypeParamDecl  = IdentifierList TypeConstraint .
 </pre>
 
 <p>
@@ -2819,7 +2819,7 @@ values or variables, or components of other, non-interface types.
 
 <p>
 A type argument <code>T</code><i> satisfies</i> a type constraint <code>C</code>
-if <code>T</code> is an element of the type set defined by <code>C</code>; i.e.,
+if <code>T</code> is an element of the type set defined by <code>C</code>; in other words,
 if <code>T</code> <a href="#Implementing_an_interface">implements</a> <code>C</code>.
 As an exception, a <a href="#Comparison_operators">strictly comparable</a>
 type constraint may also be satisfied by a <a href="#Comparison_operators">comparable</a>
@@ -2869,8 +2869,8 @@ binds corresponding identifiers to them, and gives each a type and an initial va
 </p>
 
 <pre class="ebnf">
-VarDecl     = "var" ( VarSpec | "(" { VarSpec ";" } ")" ) .
-VarSpec     = IdentifierList ( Type [ "=" ExpressionList ] | "=" ExpressionList ) .
+VarDecl = "var" ( VarSpec | "(" { VarSpec ";" } ")" ) .
+VarSpec = IdentifierList ( Type [ "=" ExpressionList ] | "=" ExpressionList ) .
 </pre>
 
 <pre>
@@ -3210,15 +3210,15 @@ Each element may optionally be preceded by a corresponding key.
 </p>
 
 <pre class="ebnf">
-CompositeLit  = LiteralType LiteralValue .
-LiteralType   = StructType | ArrayType | "[" "..." "]" ElementType |
-                SliceType | MapType | TypeName [ TypeArgs ] .
-LiteralValue  = "{" [ ElementList [ "," ] ] "}" .
-ElementList   = KeyedElement { "," KeyedElement } .
-KeyedElement  = [ Key ":" ] Element .
-Key           = FieldName | Expression | LiteralValue .
-FieldName     = identifier .
-Element       = Expression | LiteralValue .
+CompositeLit = LiteralType LiteralValue .
+LiteralType  = StructType | ArrayType | "[" "..." "]" ElementType |
+               SliceType | MapType | TypeName [ TypeArgs ] .
+LiteralValue = "{" [ ElementList [ "," ] ] "}" .
+ElementList  = KeyedElement { "," KeyedElement } .
+KeyedElement = [ Key ":" ] Element .
+Key          = FieldName | Expression | LiteralValue .
+FieldName    = identifier .
+Element      = Expression | LiteralValue .
 </pre>
 
 <p>
@@ -3450,22 +3450,21 @@ Primary expressions are the operands for unary and binary expressions.
 </p>
 
 <pre class="ebnf">
-PrimaryExpr =
-	Operand |
-	Conversion |
-	MethodExpr |
-	PrimaryExpr Selector |
-	PrimaryExpr Index |
-	PrimaryExpr Slice |
-	PrimaryExpr TypeAssertion |
-	PrimaryExpr Arguments .
+PrimaryExpr   = Operand |
+                Conversion |
+                MethodExpr |
+                PrimaryExpr Selector |
+                PrimaryExpr Index |
+                PrimaryExpr Slice |
+                PrimaryExpr TypeAssertion |
+                PrimaryExpr Arguments .
 
-Selector       = "." identifier .
-Index          = "[" Expression [ "," ] "]" .
-Slice          = "[" [ Expression ] ":" [ Expression ] "]" |
-                 "[" [ Expression ] ":" Expression ":" Expression "]" .
-TypeAssertion  = "." "(" Type ")" .
-Arguments      = "(" [ ( ExpressionList | Type [ "," ExpressionList ] ) [ "..." ] [ "," ] ] ")" .
+Selector      = "." identifier .
+Index         = "[" Expression [ "," ] "]" .
+Slice         = "[" [ Expression ] ":" [ Expression ] "]" |
+                "[" [ Expression ] ":" Expression ":" Expression "]" .
+TypeAssertion = "." "(" Type ")" .
+Arguments     = "(" [ ( ExpressionList | Type [ "," ExpressionList ] ) [ "..." ] [ "," ] ] ")" .
 </pre>
 
 
@@ -3638,8 +3637,8 @@ argument that is the receiver of the method.
 </p>
 
 <pre class="ebnf">
-MethodExpr    = ReceiverType "." MethodName .
-ReceiverType  = Type .
+MethodExpr   = ReceiverType "." MethodName .
+ReceiverType = Type .
 </pre>
 
 <p>
@@ -4230,8 +4229,7 @@ calls <code>f</code> with arguments <code>a1, a2, … an</code>.
 Except for one special case, arguments must be single-valued expressions
 <a href="#Assignability">assignable</a> to the parameter types of
 <code>F</code> and are evaluated before the function is called.
-The type of the expression is the result type
-of <code>F</code>.
+The type of the expression is the result type of <code>F</code>.
 A method invocation is similar but the method itself
 is specified as a selector upon a value of the receiver type for
 the method.
@@ -4252,9 +4250,14 @@ or used as a function value.
 <p>
 In a function call, the function value and arguments are evaluated in
 <a href="#Order_of_evaluation">the usual order</a>.
-After they are evaluated, the parameters of the call are passed by value to the function
+After they are evaluated, new storage is allocated for the function's
+<a href="#Variables">variables</a>, which includes its parameters
+and results.
+Then, the arguments of the call are <i>passed</i> to the function,
+which means that they are <a href="#Assignment_statements">assigned</a>
+to their corresponding function parameters,
 and the called function begins execution.
-The return parameters of the function are passed by value
+The return parameters of the function are passed
 back to the caller when the function returns.
 </p>
 
@@ -4268,9 +4271,9 @@ As a special case, if the return values of a function or method
 <code>g</code> are equal in number and individually
 assignable to the parameters of another function or method
 <code>f</code>, then the call <code>f(g(<i>parameters_of_g</i>))</code>
-will invoke <code>f</code> after binding the return values of
-<code>g</code> to the parameters of <code>f</code> in order.  The call
-of <code>f</code> must contain no parameters other than the call of <code>g</code>,
+will invoke <code>f</code> after passing the return values of
+<code>g</code> to the parameters of <code>f</code> in order.
+The call of <code>f</code> must contain no parameters other than the call of <code>g</code>,
 and <code>g</code> must have at least one return value.
 If <code>f</code> has a final <code>...</code> parameter, it is
 assigned the return values of <code>g</code> that remain after
@@ -4316,7 +4319,7 @@ If <code>f</code> is <a href="#Function_types">variadic</a> with a final
 parameter <code>p</code> of type <code>...T</code>, then within <code>f</code>
 the type of <code>p</code> is equivalent to type <code>[]T</code>.
 If <code>f</code> is invoked with no actual arguments for <code>p</code>,
-the value passed to <code>p</code> is <code>nil</code>.
+the value <a href="#Calls">passed</a> to <code>p</code> is <code>nil</code>.
 Otherwise, the value passed is a new slice
 of type <code>[]T</code> with a new underlying array whose successive elements
 are the actual arguments, which all must be <a href="#Assignability">assignable</a>
@@ -5916,11 +5919,10 @@ Statements control execution.
 </p>
 
 <pre class="ebnf">
-Statement =
-	Declaration | LabeledStmt | SimpleStmt |
-	GoStmt | ReturnStmt | BreakStmt | ContinueStmt | GotoStmt |
-	FallthroughStmt | Block | IfStmt | SwitchStmt | SelectStmt | ForStmt |
-	DeferStmt .
+Statement  = Declaration | LabeledStmt | SimpleStmt |
+             GoStmt | ReturnStmt | BreakStmt | ContinueStmt | GotoStmt |
+             FallthroughStmt | Block | IfStmt | SwitchStmt | SelectStmt | ForStmt |
+             DeferStmt .
 
 SimpleStmt = EmptyStmt | ExpressionStmt | SendStmt | IncDecStmt | Assignment | ShortVarDecl .
 </pre>
@@ -6132,7 +6134,7 @@ matching number of variables.
 <pre class="ebnf">
 Assignment = ExpressionList assign_op ExpressionList .
 
-assign_op = [ add_op | mul_op ] "=" .
+assign_op  = [ add_op | mul_op ] "=" .
 </pre>
 
 <p>
@@ -6548,7 +6550,7 @@ The iteration may be controlled by a single condition, a "for" clause, or a "ran
 </p>
 
 <pre class="ebnf">
-ForStmt = "for" [ Condition | ForClause | RangeClause ] Block .
+ForStmt   = "for" [ Condition | ForClause | RangeClause ] Block .
 Condition = Expression .
 </pre>
 
@@ -6580,8 +6582,8 @@ an increment or decrement statement. The init statement may be a
 
 <pre class="ebnf">
 ForClause = [ InitStmt ] ";" [ Condition ] ";" [ PostStmt ] .
-InitStmt = SimpleStmt .
-PostStmt = SimpleStmt .
+InitStmt  = SimpleStmt .
+PostStmt  = SimpleStmt .
 </pre>
 
 <pre>
@@ -7909,7 +7911,7 @@ types, variables, and constants.
 </p>
 
 <pre class="ebnf">
-SourceFile       = PackageClause ";" { ImportDecl ";" } { TopLevelDecl ";" } .
+SourceFile = PackageClause ";" { ImportDecl ";" } { TopLevelDecl ";" } .
 </pre>
 
 <h3 id="Package_clause">Package clause</h3>
@@ -7920,8 +7922,8 @@ to which the file belongs.
 </p>
 
 <pre class="ebnf">
-PackageClause  = "package" PackageName .
-PackageName    = identifier .
+PackageClause = "package" PackageName .
+PackageName   = identifier .
 </pre>
 
 <p>
@@ -7950,9 +7952,9 @@ that specifies the package to be imported.
 </p>
 
 <pre class="ebnf">
-ImportDecl       = "import" ( ImportSpec | "(" { ImportSpec ";" } ")" ) .
-ImportSpec       = [ "." | PackageName ] ImportPath .
-ImportPath       = string_lit .
+ImportDecl = "import" ( ImportSpec | "(" { ImportSpec ";" } ")" ) .
+ImportSpec = [ "." | PackageName ] ImportPath .
+ImportPath = string_lit .
 </pre>
 
 <p>
